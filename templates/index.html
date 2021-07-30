@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+
+<head>
+    <!--Webseitentitel -->
+    <title>Diplomarbeit: Home Security Prototyp</title>
+
+    <!-- Einbinden von Style.css -->
+    <link rel="stylesheet" href='../static/style.css' />
+    
+    <!-- Einbinden von Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" 
+        rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
+        crossorigin="anonymous">
+        
+    <!-- Definieren von Content-Type -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap');
+        body {
+            text-align: center;
+            background-color: rgb(24, 24, 24);
+            color: white
+        }
+        
+        /* Konfiguration Gages 1 und 2 */
+        #g1,
+        #g2 {
+            width: 500px;
+            height: 460px;
+            display:block;
+        }
+        
+        /* Konfiguration CSS Cards */
+        .cards {
+            border: black;
+            background-color: rgb(24, 24, 24);
+            width: 30rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header bzw. Diplomarbeits-Titel -->
+    <h1>Home Security Prototyp </h1>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div id="g1">
+                </div>
+                <div id="g2" class="mb-10">
+                </div>
+            </div>
+
+            <!-- col-lg ist eine Bootstrap Klasse zum Bau von Layouts mittels Grid-Systemen -->
+            <div class="col-lg-6">
+                <div class="card cards text-center mt-3 mx-auto" style="width: 100%;">
+                    <div class="card-body">
+                        <!-- Einbinden des Temperaturdiagrammes -->
+                        <img class="img-fluid img-responsive" src="/plot/temperaturdiagramm" 
+                            alt="Image Placeholder" width="100%">
+                    </div>
+                </div>
+                <div class="card cards text-center mt-3 mx-auto" style="width: 100%;">
+                    <div class="card-body">
+                        <!-- Einbinden des Luftfeuchtigkeitsdiagrammes -->
+                        <img class="img-fluid img-responsive" src="/plot/luftfeuchtigkeitsdiagramm" 
+                            alt="Image Placeholder" width="100%">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container navigation">
+        <div class="row">
+            <div class="container col-lg-6">
+                <div class="row">
+                    <div>
+                    
+                        <!-- Erstellen des Buttons, welcher die Zeit der letzten Messung anzeigt -->
+                        <div class="card cards text-center mx-auto">
+                            <div class="card-body">
+                                <h4 class="card-title">Zuletzt gemessen: {{ zeit }}</h4>
+                                <a href="/" class="btn button btn-primary">aktualisieren</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Erstellen des Buttons, welcher auf die Kameraseite navigiert -->
+                    <div class="card cards text-center mt-3 mx-auto">
+                        <div class="card-body">
+                            <h4 class="card-title">Livestream</h4>
+                            <a href="./kamera" class="btn button btn-primary">navigieren </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+            
+                <!-- Erstellen des Buttons, durch welchen die Datenbank ausgewertet werden kann -->
+                <div class="card cards text-center mt-3 mx-auto">
+                    <div class="card-body">
+                        <h4 class="card-title">Datenbank auswerten</h4>
+                        <p> Betrachtungsintervall (Ein Schritt enspricht: {{ abtastung }} Minute)
+                            <form method="POST">
+                                <input name="anzahlGeforderterWerte" value={{anzahlGeforderterWerte}}>
+                                <input type="submit" class="btn button btn-primary">
+                            </form>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Einbinden der JustGage Plugins. -->  
+    <script src="../static/raphael-2.1.4.min.js"></script>
+    <script src="../static/justgage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" 
+        integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" 
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" 
+        integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" 
+        crossorigin="anonymous"></script>
+        
+    <!-- Erstellen des Skriptes für die JustGage Implementierung -->    
+    <script>
+        var g1, g2;
+        document.addEventListener("DOMContentLoaded", function(event) {
+        
+            /* Implementieren des Temperatur-Gages */
+            g1 = new JustGage({
+                id: "g1",
+                value: {{temperatur}},
+                valueFontColor: "white",
+                titleFontColor: "white",
+                min: -10,
+                max: 50,
+                gaugeColor: "Dodgerblue",
+                title: "Temperatur",
+                label: "Celcius"
+            });
+            
+            /* Implementieren des Luftfeuchtigkeits-Gages */
+            g2 = new JustGage({
+                id: "g2",
+                value: {{luftfeuchtigkeit}},
+                valueFontColor: "white",
+                titleFontColor: "white",
+                gaugeColor: "Dodgerblue",
+                min: 0,
+                max: 100,
+                title: "Luftfeuchtigkeit",
+                label: "%"
+            });
+        });
+    </script>
+</body>
+
+</html>
