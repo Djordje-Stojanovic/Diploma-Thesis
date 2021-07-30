@@ -1,1 +1,1 @@
-# Die Dokumentation dieses Home-Security-Systems ist in der dazugehörigen Diplomarbeit-PDF enthalten.
+# The documentation of the home-security-system is in the included ("Diplomarbeit-Stojanovic-Toprak.pdf") file.
